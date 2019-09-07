@@ -1,0 +1,68 @@
+entity Category {
+	title String
+}
+
+entity Product {
+	title String,
+    price Double
+}
+
+entity Cart {
+	quantity Integer
+}
+
+entity CartState {
+	title String
+}
+
+entity Campaign {
+	title String,
+    baseProductQuantity Integer
+}
+
+entity DiscountType {
+	title String // Rate, Amount
+}
+
+entity Coupon {
+	title String,
+    code String,
+    minimumAmount Double
+}
+
+relationship ManyToOne {
+	Category{parentCategory} to Category
+}
+
+// defining multiple oneToOne relationships
+relationship ManyToOne {
+	Product{category} to Category
+}
+
+relationship ManyToOne {
+	Cart{cartState} to CartState
+}
+
+relationship OneToMany {
+	Cart{products} to Product
+}
+
+relationship ManyToOne {
+	Cart{user} to User
+} 
+
+relationship ManyToOne {
+	Campaign{discountType} to DiscountType
+}
+
+relationship ManyToOne {
+	Coupon{discountType} to DiscountType
+}
+
+dto * with mapstruct
+service all with serviceImpl
+// Set service options to all except few
+
+
+// Set an angular suffix
+// angularSuffix * with mySuffix

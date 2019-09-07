@@ -1,0 +1,65 @@
+<div>
+    <h2 id="page-heading">
+        <span>Campaigns</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-campaign" [routerLink]="['/campaign/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create a new Campaign
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="alert alert-warning" *ngIf="campaigns?.length === 0">
+        <span>No campaigns found</span>
+    </div>
+    <div class="table-responsive" *ngIf="campaigns?.length > 0">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Title</span></th>
+            <th><span>Base Product Quantity</span></th>
+            <th><span>Discount Type</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let campaign of campaigns ;trackBy: trackId">
+                <td><a [routerLink]="['/campaign', campaign.id, 'view' ]">{{campaign.id}}</a></td>
+                <td>{{campaign.title}}</td>
+                <td>{{campaign.baseProductQuantity}}</td>
+                <td>
+                    <div *ngIf="campaign.discountTypeId">
+                        <a [routerLink]="['/discount-type', campaign.discountTypeId , 'view' ]" >{{campaign.discountTypeId}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <button type="submit"
+                                [routerLink]="['/campaign', campaign.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/campaign', campaign.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/campaign', { outlets: { popup: campaign.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
