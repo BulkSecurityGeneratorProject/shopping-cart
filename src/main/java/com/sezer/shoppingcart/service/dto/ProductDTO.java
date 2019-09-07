@@ -1,4 +1,7 @@
 package com.sezer.shoppingcart.service.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,9 +16,11 @@ public class ProductDTO implements Serializable {
 
     private Double price;
 
-
     private Long categoryId;
 
+    private CategoryDTO category;
+
+    @JsonIgnore
     private Long cartId;
 
     public Long getId() {
@@ -48,6 +53,14 @@ public class ProductDTO implements Serializable {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
     }
 
     public Long getCartId() {

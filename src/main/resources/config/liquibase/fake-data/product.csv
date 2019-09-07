@@ -1,11 +1,11 @@
-id;title;price
-1;Multi-channelled Licensed;61838
-2;syndicate;98323
-3;Canyon HDD;68030
-4;Centers;1326
-5;Usability South Dakota envisioneer;1596
-6;Public-key;24102
-7;Bahamian Dollar Investment Account;83319
-8;Salad;39106
-9;Tuna;75536
-10;convergence;20794
+id;title;price;category_id
+1;Spor Ayakkabı;150;2
+2;Çanta;200;1
+3;Elbise;220;2
+4;Deterjan;25;2
+5;Erkek Çanta;80;2
+6;Kadın Çanta;50;3
+7;Cüzdan;60;4
+8;Parfüm;70;2
+9;Rondo;90;3
+10;Mutfak Robotu;100;2

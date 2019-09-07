@@ -11,11 +11,9 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {CategoryMapper.class, CartMapper.class})
 public interface ProductMapper extends EntityMapper<ProductDTO, Product> {
 
-    @Mapping(source = "category.id", target = "categoryId")
     @Mapping(source = "cart.id", target = "cartId")
     ProductDTO toDto(Product product);
 
-    @Mapping(source = "categoryId", target = "category")
     @Mapping(source = "cartId", target = "cart")
     Product toEntity(ProductDTO productDTO);
 
