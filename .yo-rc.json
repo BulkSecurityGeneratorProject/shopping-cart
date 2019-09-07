@@ -1,0 +1,37 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.sezer.shoppingcart"
+    },
+    "jhipsterVersion": "6.2.0",
+    "applicationType": "monolith",
+    "baseName": "ShoppingCart",
+    "packageName": "com.sezer.shoppingcart",
+    "packageFolder": "com/sezer/shoppingcart",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "mssql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZTBjMjMxZjExODNlZmVmNTRlM2FlNzczMDI4NWZjM2JmYmZjZWUxY2U5MDk2ZTM2YzNjNTJhYTJkODdiZWJhYzU3ZTEwMzI5MDFkNjg5YmRjYmZlMzYwNjg5NDgxNWFkMmVjMDI5MDVkNTEwMzYwNGY4Zjg3MTg0MGVjZTNiMzI=",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "blueprints": []
+  }
+}
