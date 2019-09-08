@@ -1,4 +1,4 @@
-id;title;base_product_quantity
-1;Discount 1;3
-2;Discount 2;5
-3;Discount 3;5
+id;title;base_product_quantity;discount;discount_type_id
+1;Discount 1;3;0.2;1
+2;Discount 2;5;0.5;1
+3;Discount 3;5;5.0;2

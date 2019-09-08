@@ -25,6 +25,9 @@ public class Campaign implements Serializable {
     @Column(name = "base_product_quantity")
     private Integer baseProductQuantity;
 
+    @Column(name = "discount")
+    private Double discount;
+
     @ManyToOne
     @JsonIgnoreProperties("campaigns")
     private DiscountType discountType;
@@ -64,6 +67,19 @@ public class Campaign implements Serializable {
         this.baseProductQuantity = baseProductQuantity;
     }
 
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public Campaign discount(Double discount) {
+        this.discount = discount;
+        return this;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
+    }
+
     public DiscountType getDiscountType() {
         return discountType;
     }
@@ -100,6 +116,7 @@ public class Campaign implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", baseProductQuantity=" + getBaseProductQuantity() +
+            ", discount=" + getDiscount() +
             "}";
     }
 }

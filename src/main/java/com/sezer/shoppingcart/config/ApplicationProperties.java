@@ -11,4 +11,34 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
+    private Delivery delivery;
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    public static class Delivery{
+        private Double costPerDelivery;
+        private Double fixedCost;
+
+        public Double getCostPerDelivery() {
+            return costPerDelivery;
+        }
+
+        public void setCostPerDelivery(Double costPerDelivery) {
+            this.costPerDelivery = costPerDelivery;
+        }
+
+        public Double getFixedCost() {
+            return fixedCost;
+        }
+
+        public void setFixedCost(Double fixedCost) {
+            this.fixedCost = fixedCost;
+        }
+    }
 }

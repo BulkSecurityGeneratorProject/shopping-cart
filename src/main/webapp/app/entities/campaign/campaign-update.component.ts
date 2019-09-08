@@ -23,6 +23,7 @@ export class CampaignUpdateComponent implements OnInit {
     id: [],
     title: [],
     baseProductQuantity: [],
+    discount: [],
     discountTypeId: []
   });
 
@@ -53,6 +54,7 @@ export class CampaignUpdateComponent implements OnInit {
       id: campaign.id,
       title: campaign.title,
       baseProductQuantity: campaign.baseProductQuantity,
+      discount: campaign.discount,
       discountTypeId: campaign.discountTypeId
     });
   }
@@ -77,6 +79,7 @@ export class CampaignUpdateComponent implements OnInit {
       id: this.editForm.get(['id']).value,
       title: this.editForm.get(['title']).value,
       baseProductQuantity: this.editForm.get(['baseProductQuantity']).value,
+      discount: this.editForm.get(['discount']).value,
       discountTypeId: this.editForm.get(['discountTypeId']).value
     };
   }

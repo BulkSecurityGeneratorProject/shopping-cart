@@ -43,6 +43,10 @@ public class CampaignResourceIT {
     private static final Integer UPDATED_BASE_PRODUCT_QUANTITY = 2;
     private static final Integer SMALLER_BASE_PRODUCT_QUANTITY = 1 - 1;
 
+    private static final Double DEFAULT_DISCOUNT = 1D;
+    private static final Double UPDATED_DISCOUNT = 2D;
+    private static final Double SMALLER_DISCOUNT = 1D - 1D;
+
     @Autowired
     private CampaignRepository campaignRepository;
 
@@ -92,7 +96,8 @@ public class CampaignResourceIT {
     public static Campaign createEntity(EntityManager em) {
         Campaign campaign = new Campaign()
             .title(DEFAULT_TITLE)
-            .baseProductQuantity(DEFAULT_BASE_PRODUCT_QUANTITY);
+            .baseProductQuantity(DEFAULT_BASE_PRODUCT_QUANTITY)
+            .discount(DEFAULT_DISCOUNT);
         return campaign;
     }
     /**
@@ -104,7 +109,8 @@ public class CampaignResourceIT {
     public static Campaign createUpdatedEntity(EntityManager em) {
         Campaign campaign = new Campaign()
             .title(UPDATED_TITLE)
-            .baseProductQuantity(UPDATED_BASE_PRODUCT_QUANTITY);
+            .baseProductQuantity(UPDATED_BASE_PRODUCT_QUANTITY)
+            .discount(UPDATED_DISCOUNT);
         return campaign;
     }
 
@@ -131,6 +137,7 @@ public class CampaignResourceIT {
         Campaign testCampaign = campaignList.get(campaignList.size() - 1);
         assertThat(testCampaign.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testCampaign.getBaseProductQuantity()).isEqualTo(DEFAULT_BASE_PRODUCT_QUANTITY);
+        assertThat(testCampaign.getDiscount()).isEqualTo(DEFAULT_DISCOUNT);
     }
 
     @Test
@@ -166,7 +173,8 @@ public class CampaignResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(campaign.getId().intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
-            .andExpect(jsonPath("$.[*].baseProductQuantity").value(hasItem(DEFAULT_BASE_PRODUCT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].baseProductQuantity").value(hasItem(DEFAULT_BASE_PRODUCT_QUANTITY)))
+            .andExpect(jsonPath("$.[*].discount").value(hasItem(DEFAULT_DISCOUNT.doubleValue())));
     }
     
     @Test
@@ -181,7 +189,8 @@ public class CampaignResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(campaign.getId().intValue()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()))
-            .andExpect(jsonPath("$.baseProductQuantity").value(DEFAULT_BASE_PRODUCT_QUANTITY));
+            .andExpect(jsonPath("$.baseProductQuantity").value(DEFAULT_BASE_PRODUCT_QUANTITY))
+            .andExpect(jsonPath("$.discount").value(DEFAULT_DISCOUNT.doubleValue()));
     }
 
     @Test
@@ -206,7 +215,8 @@ public class CampaignResourceIT {
         em.detach(updatedCampaign);
         updatedCampaign
             .title(UPDATED_TITLE)
-            .baseProductQuantity(UPDATED_BASE_PRODUCT_QUANTITY);
+            .baseProductQuantity(UPDATED_BASE_PRODUCT_QUANTITY)
+            .discount(UPDATED_DISCOUNT);
         CampaignDTO campaignDTO = campaignMapper.toDto(updatedCampaign);
 
         restCampaignMockMvc.perform(put("/api/campaigns")
@@ -220,6 +230,7 @@ public class CampaignResourceIT {
         Campaign testCampaign = campaignList.get(campaignList.size() - 1);
         assertThat(testCampaign.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testCampaign.getBaseProductQuantity()).isEqualTo(UPDATED_BASE_PRODUCT_QUANTITY);
+        assertThat(testCampaign.getDiscount()).isEqualTo(UPDATED_DISCOUNT);
     }
 
     @Test

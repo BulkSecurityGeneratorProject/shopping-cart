@@ -13,6 +13,8 @@ public class CampaignDTO implements Serializable {
 
     private Integer baseProductQuantity;
 
+    private Double discount;
+
 
     private Long discountTypeId;
 
@@ -38,6 +40,14 @@ public class CampaignDTO implements Serializable {
 
     public void setBaseProductQuantity(Integer baseProductQuantity) {
         this.baseProductQuantity = baseProductQuantity;
+    }
+
+    public Double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Double discount) {
+        this.discount = discount;
     }
 
     public Long getDiscountTypeId() {
@@ -75,6 +85,7 @@ public class CampaignDTO implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", baseProductQuantity=" + getBaseProductQuantity() +
+            ", discount=" + getDiscount() +
             ", discountType=" + getDiscountTypeId() +
             "}";
     }

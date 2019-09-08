@@ -8,6 +8,10 @@
         {
             "fieldName": "baseProductQuantity",
             "fieldType": "Integer"
+        },
+        {
+            "fieldName": "discount",
+            "fieldType": "Double"
         }
     ],
     "relationships": [
