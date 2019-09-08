@@ -2,15 +2,16 @@ package com.sezer.shoppingcart.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
 
 /**
- * A Cart.
+ * A CartProduct.
  */
 @Entity
-@Table(name = "cart")
-public class Cart implements Serializable {
+@Table(name = "cart_product")
+public class CartProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,13 +20,15 @@ public class Cart implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @ManyToOne
-    @JsonIgnoreProperties("carts")
-    private CartState cartState;
+    @NotNull
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 
     @ManyToOne
-    @JsonIgnoreProperties("carts")
-    private User user;
+    private Cart cart;
+
+    @ManyToOne
+    private Product product;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -36,30 +39,43 @@ public class Cart implements Serializable {
         this.id = id;
     }
 
-    public CartState getCartState() {
-        return cartState;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public Cart cartState(CartState cartState) {
-        this.cartState = cartState;
+    public CartProduct quantity(Integer quantity) {
+        this.quantity = quantity;
         return this;
     }
 
-    public void setCartState(CartState cartState) {
-        this.cartState = cartState;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
-    public User getUser() {
-        return user;
+    public Cart getCart() {
+        return cart;
     }
 
-    public Cart user(User user) {
-        this.user = user;
+    public CartProduct cart(Cart cart) {
+        this.cart = cart;
         return this;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public CartProduct product(Product product) {
+        this.product = product;
+        return this;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -68,10 +84,10 @@ public class Cart implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Cart)) {
+        if (!(o instanceof CartProduct)) {
             return false;
         }
-        return id != null && id.equals(((Cart) o).id);
+        return id != null && id.equals(((CartProduct) o).id);
     }
 
     @Override
@@ -81,8 +97,9 @@ public class Cart implements Serializable {
 
     @Override
     public String toString() {
-        return "Cart{" +
+        return "CartProduct{" +
             "id=" + getId() +
+            ", quantity=" + getQuantity() +
             "}";
     }
 }

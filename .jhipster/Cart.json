@@ -1,18 +1,8 @@
 {
     "name": "Cart",
     "fields": [
-        {
-            "fieldName": "quantity",
-            "fieldType": "Integer"
-        }
     ],
     "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "product",
-            "otherEntityRelationshipName": "cart",
-            "relationshipName": "products"
-        },
         {
             "relationshipType": "many-to-one",
             "otherEntityName": "cartState",

@@ -24,7 +24,6 @@ export class CartUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    quantity: [],
     cartStateId: [],
     userId: []
   });
@@ -62,7 +61,6 @@ export class CartUpdateComponent implements OnInit {
   updateForm(cart: ICart) {
     this.editForm.patchValue({
       id: cart.id,
-      quantity: cart.quantity,
       cartStateId: cart.cartStateId,
       userId: cart.userId
     });
@@ -86,7 +84,6 @@ export class CartUpdateComponent implements OnInit {
     return {
       ...new Cart(),
       id: this.editForm.get(['id']).value,
-      quantity: this.editForm.get(['quantity']).value,
       cartStateId: this.editForm.get(['cartStateId']).value,
       userId: this.editForm.get(['userId']).value
     };

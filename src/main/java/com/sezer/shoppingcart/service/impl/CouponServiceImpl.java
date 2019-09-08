@@ -87,4 +87,11 @@ public class CouponServiceImpl implements CouponService {
         log.debug("Request to delete Coupon : {}", id);
         couponRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<CouponDTO> findCouponByCode(String code) {
+        log.debug("Request to get Coupon with code: {}", code);
+        return couponRepository.findCouponByCode(code)
+            .map(couponMapper::toDto);
+    }
 }

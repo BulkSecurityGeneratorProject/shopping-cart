@@ -21,11 +21,13 @@
     <include file="config/liquibase/changelog/20190907213008_added_entity_Campaign.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213009_added_entity_DiscountType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213010_added_entity_Coupon.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190908213700_added_entity_CartProduct.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20190907213004_added_entity_constraints_Category.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213005_added_entity_constraints_Product.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213006_added_entity_constraints_Cart.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213008_added_entity_constraints_Campaign.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907213010_added_entity_constraints_Coupon.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190908213700_added_entity_constraints_CartProduct.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

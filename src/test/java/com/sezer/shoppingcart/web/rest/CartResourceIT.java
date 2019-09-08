@@ -36,10 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShoppingCartApp.class)
 public class CartResourceIT {
 
-    private static final Integer DEFAULT_QUANTITY = 1;
-    private static final Integer UPDATED_QUANTITY = 2;
-    private static final Integer SMALLER_QUANTITY = 1 - 1;
-
     @Autowired
     private CartRepository cartRepository;
 
@@ -87,8 +83,7 @@ public class CartResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Cart createEntity(EntityManager em) {
-        Cart cart = new Cart()
-            .quantity(DEFAULT_QUANTITY);
+        Cart cart = new Cart();
         return cart;
     }
     /**
@@ -98,8 +93,7 @@ public class CartResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Cart createUpdatedEntity(EntityManager em) {
-        Cart cart = new Cart()
-            .quantity(UPDATED_QUANTITY);
+        Cart cart = new Cart();
         return cart;
     }
 
@@ -124,7 +118,6 @@ public class CartResourceIT {
         List<Cart> cartList = cartRepository.findAll();
         assertThat(cartList).hasSize(databaseSizeBeforeCreate + 1);
         Cart testCart = cartList.get(cartList.size() - 1);
-        assertThat(testCart.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
     }
 
     @Test
@@ -158,8 +151,7 @@ public class CartResourceIT {
         restCartMockMvc.perform(get("/api/carts?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(cart.getId().intValue())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(cart.getId().intValue())));
     }
     
     @Test
@@ -172,8 +164,7 @@ public class CartResourceIT {
         restCartMockMvc.perform(get("/api/carts/{id}", cart.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(cart.getId().intValue()))
-            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY));
+            .andExpect(jsonPath("$.id").value(cart.getId().intValue()));
     }
 
     @Test
@@ -196,8 +187,6 @@ public class CartResourceIT {
         Cart updatedCart = cartRepository.findById(cart.getId()).get();
         // Disconnect from session so that the updates on updatedCart are not directly saved in db
         em.detach(updatedCart);
-        updatedCart
-            .quantity(UPDATED_QUANTITY);
         CartDTO cartDTO = cartMapper.toDto(updatedCart);
 
         restCartMockMvc.perform(put("/api/carts")
@@ -209,7 +198,6 @@ public class CartResourceIT {
         List<Cart> cartList = cartRepository.findAll();
         assertThat(cartList).hasSize(databaseSizeBeforeUpdate);
         Cart testCart = cartList.get(cartList.size() - 1);
-        assertThat(testCart.getQuantity()).isEqualTo(UPDATED_QUANTITY);
     }
 
     @Test

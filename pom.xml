@@ -6,7 +6,7 @@
     <groupId>com.sezer.shoppingcart</groupId>
     <artifactId>shopping-cart</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>Shopping Cart</name>
 
     <repositories>

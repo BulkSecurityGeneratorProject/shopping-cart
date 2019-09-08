@@ -1,7 +1,6 @@
 package com.sezer.shoppingcart.service.dto;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A DTO for the {@link com.sezer.shoppingcart.domain.Cart} entity.
@@ -10,9 +9,6 @@ public class CartDTO implements Serializable {
 
     private Long id;
 
-    private Integer quantity;
-
-    private Set<ProductDTO> products;
 
     private Long cartStateId;
 
@@ -24,22 +20,6 @@ public class CartDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Set<ProductDTO> getProducts() {
-        return products;
-    }
-
-    public void setProducts(Set<ProductDTO> products) {
-        this.products = products;
     }
 
     public Long getCartStateId() {
@@ -83,7 +63,6 @@ public class CartDTO implements Serializable {
     public String toString() {
         return "CartDTO{" +
             "id=" + getId() +
-            ", quantity=" + getQuantity() +
             ", cartState=" + getCartStateId() +
             ", user=" + getUserId() +
             "}";

@@ -1,55 +1,59 @@
 <div>
     <h2 id="page-heading">
-        <span>Carts</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-cart" [routerLink]="['/cart/new']">
+        <span>Cart Products</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-cart-product" [routerLink]="['/cart-product/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span >
-            Create a new Cart
+            Create a new Cart Product
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
     <br/>
-    <div class="alert alert-warning" *ngIf="carts?.length === 0">
-        <span>No carts found</span>
+    <div class="alert alert-warning" *ngIf="cartProducts?.length === 0">
+        <span>No cartProducts found</span>
     </div>
-    <div class="table-responsive" *ngIf="carts?.length > 0">
+    <div class="table-responsive" *ngIf="cartProducts?.length > 0">
         <table class="table table-striped">
             <thead>
             <tr>
             <th><span>ID</span></th>
-            <th><span>Cart State</span></th>
-            <th><span>User</span></th>
+            <th><span>Quantity</span></th>
+            <th><span>Cart</span></th>
+            <th><span>Product</span></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let cart of carts ;trackBy: trackId">
-                <td><a [routerLink]="['/cart', cart.id, 'view' ]">{{cart.id}}</a></td>
+            <tr *ngFor="let cartProduct of cartProducts ;trackBy: trackId">
+                <td><a [routerLink]="['/cart-product', cartProduct.id, 'view' ]">{{cartProduct.id}}</a></td>
+                <td>{{cartProduct.quantity}}</td>
                 <td>
-                    <div *ngIf="cart.cartStateId">
-                        <a [routerLink]="['/cart-state', cart.cartStateId , 'view' ]" >{{cart.cartStateId}}</a>
+                    <div *ngIf="cartProduct.cartId">
+                        <a [routerLink]="['/cart', cartProduct.cartId , 'view' ]" >{{cartProduct.cartId}}</a>
                     </div>
                 </td>
                 <td>
-                    {{cart.userId}}
+                    <div *ngIf="cartProduct.productId">
+                        <a [routerLink]="['/product', cartProduct.productId , 'view' ]" >{{cartProduct.productId}}</a>
+                    </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
-                                [routerLink]="['/cart', cart.id, 'view' ]"
+                                [routerLink]="['/cart-product', cartProduct.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/cart', cart.id, 'edit']"
+                                [routerLink]="['/cart-product', cartProduct.id, 'edit']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/cart', { outlets: { popup: cart.id + '/delete'} }]"
+                                [routerLink]="['/cart-product', { outlets: { popup: cartProduct.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">

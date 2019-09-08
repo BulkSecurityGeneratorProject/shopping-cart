@@ -31,6 +31,10 @@ import { RouterModule } from '@angular/router';
       {
         path: 'coupon',
         loadChildren: () => import('./coupon/coupon.module').then(m => m.ShoppingCartCouponModule)
+      },
+      {
+        path: 'cart-product',
+        loadChildren: () => import('./cart-product/cart-product.module').then(m => m.ShoppingCartCartProductModule)
       }
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ])

@@ -15,8 +15,6 @@ public interface CartMapper extends EntityMapper<CartDTO, Cart> {
     @Mapping(source = "user.id", target = "userId")
     CartDTO toDto(Cart cart);
 
-    @Mapping(target = "products", ignore = true)
-    @Mapping(target = "removeProducts", ignore = true)
     @Mapping(source = "cartStateId", target = "cartState")
     @Mapping(source = "userId", target = "user")
     Cart toEntity(CartDTO cartDTO);
