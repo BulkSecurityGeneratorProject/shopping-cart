@@ -1,5 +1,6 @@
 package com.sezer.shoppingcart.service.dto;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -9,6 +10,7 @@ public class CartDTO implements Serializable {
 
     private Long id;
 
+    private List<CartProductDTO> cartProduct;
 
     private Long cartStateId;
 
@@ -20,6 +22,14 @@ public class CartDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<CartProductDTO> getCartProduct() {
+        return cartProduct;
+    }
+
+    public void setCartProduct(List<CartProductDTO> cartProduct) {
+        this.cartProduct = cartProduct;
     }
 
     public Long getCartStateId() {

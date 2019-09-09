@@ -23,7 +23,7 @@ public class ApplicationProperties {
 
     public static class Delivery{
         private Double costPerDelivery;
-        private Double fixedCost;
+        private Double costPerProduct;
 
         public Double getCostPerDelivery() {
             return costPerDelivery;
@@ -33,12 +33,12 @@ public class ApplicationProperties {
             this.costPerDelivery = costPerDelivery;
         }
 
-        public Double getFixedCost() {
-            return fixedCost;
+        public Double getCostPerProduct() {
+            return costPerProduct;
         }
 
-        public void setFixedCost(Double fixedCost) {
-            this.fixedCost = fixedCost;
+        public void setCostPerProduct(Double costPerProduct) {
+            this.costPerProduct = costPerProduct;
         }
     }
 }

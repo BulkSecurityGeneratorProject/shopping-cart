@@ -12,6 +12,7 @@ import com.sezer.shoppingcart.service.CartProductService;
 import com.sezer.shoppingcart.service.CartService;
 import com.sezer.shoppingcart.service.CouponService;
 import com.sezer.shoppingcart.service.dto.*;
+import com.sezer.shoppingcart.service.helper.DeliveryCostCalculator;
 import com.sezer.shoppingcart.service.mapper.CartMapper;
 import com.sezer.shoppingcart.service.vm.CategoryPriceQuantityVM;
 import org.slf4j.Logger;
@@ -126,10 +127,17 @@ public class CartServiceImpl implements CartService {
         cartProductService.save(cartProductDTO);
     }
 
-    public void applyCampaignDiscounts() {
+    public double getTotalAmountAfterDiscounts(String campaignCode){
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findByUserIsCurrentUser(CartStateEnum.PENDING_ORDER.getId()).orElse(null));
+        Double subTotal = this.getCampaignDiscount(cartDTO);
+        subTotal = this.getCouponDiscount(campaignCode, subTotal);
+        Double deliveryCost = getDeliveryCost(cartDTO);
+        return subTotal + deliveryCost;
+    }
+
+    public double getCampaignDiscount(CartDTO cartDTO) {
         if (cartDTO == null)
-            return;
+            return 0d;
 
         // Grouped by categoryId with quantity and price informations
         Map<Long, CategoryPriceQuantityVM> categoryQuantityMap = getCategoryQuantityMap(cartDTO.getId());
@@ -165,6 +173,7 @@ public class CartServiceImpl implements CartService {
             });
         }
 
+        Double subTotal = 0d;
         // Iterate on map for checking campaigns.
         for (Long categoryId : categoryQuantityMap.keySet()) {
             CategoryPriceQuantityVM categoryPriceAndQuantity = categoryQuantityMap.get(categoryId);
@@ -180,10 +189,12 @@ public class CartServiceImpl implements CartService {
                     categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() - campaign.getDiscount());
                 }
             }
+            subTotal += categoryPriceAndQuantity.getPrice();
         }
+        return subTotal;
     }
 
-    public Double applyCouponDiscount(String code, Double subTotal) {
+    public double getCouponDiscount(String code, Double subTotal) {
         CouponDTO couponDTO = couponService.findCouponByCode(code).orElse(null);
         // If code is valid
         if (couponDTO != null) {
@@ -192,6 +203,11 @@ public class CartServiceImpl implements CartService {
             }
         }
         return subTotal;
+    }
+
+    public double getDeliveryCost(CartDTO cartDTO) {
+        DeliveryCostCalculator deliveryCostCalculator = new DeliveryCostCalculator();
+        return deliveryCostCalculator.calculateFor(cartDTO);
     }
 
     // This function returns quantity of the items bought from same category with categoryId
