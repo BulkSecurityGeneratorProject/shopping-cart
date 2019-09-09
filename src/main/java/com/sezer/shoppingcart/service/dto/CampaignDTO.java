@@ -15,8 +15,9 @@ public class CampaignDTO implements Serializable {
 
     private Double discount;
 
-
     private Long discountTypeId;
+
+    private DiscountTypeDTO discountType;
 
     public Long getId() {
         return id;
@@ -56,6 +57,14 @@ public class CampaignDTO implements Serializable {
 
     public void setDiscountTypeId(Long discountTypeId) {
         this.discountTypeId = discountTypeId;
+    }
+
+    public DiscountTypeDTO getDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(DiscountTypeDTO discountType) {
+        this.discountType = discountType;
     }
 
     @Override

@@ -1,11 +1,11 @@
 id;title;price;category_id
 1;Spor Ayakkabı;150;2
 2;Çanta;200;1
-3;Elbise;220;2
+3;Elbise;220;1
 4;Deterjan;25;2
 5;Erkek Çanta;80;2
-6;Kadın Çanta;50;3
-7;Cüzdan;60;4
+6;Kadın Çanta;50;1
+7;Cüzdan;60;2
 8;Parfüm;70;2
-9;Rondo;90;3
-10;Mutfak Robotu;100;2
+9;Rondo;90;2
+10;Mutfak Robotu;100;1
