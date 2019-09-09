@@ -127,7 +127,8 @@ public class CartServiceImpl implements CartService {
         cartProductService.save(cartProductDTO);
     }
 
-    public double getTotalAmountAfterDiscounts(String campaignCode){
+    @Override
+    public double getTotalAmountAfterDiscounts(String campaignCode) {
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findByUserIsCurrentUser(CartStateEnum.PENDING_ORDER.getId()).orElse(null));
         Double subTotal = this.getCampaignDiscount(cartDTO);
         subTotal = this.getCouponDiscount(campaignCode, subTotal);
@@ -135,6 +136,7 @@ public class CartServiceImpl implements CartService {
         return subTotal + deliveryCost;
     }
 
+    @Override
     public double getCampaignDiscount(CartDTO cartDTO) {
         if (cartDTO == null)
             return 0d;
@@ -147,6 +149,35 @@ public class CartServiceImpl implements CartService {
 
         List<CampaignDTO> rateCampaigns = new ArrayList<>();
         List<CampaignDTO> amountCampaigns = new ArrayList<>();
+
+        // Group different type of campaigns and order them descending order by quantity param
+        groupCampaigns(campaignList, rateCampaigns, amountCampaigns);
+
+        Double subTotal = 0d;
+        // Iterate on map for checking campaigns.
+        for (Long categoryId : categoryQuantityMap.keySet()) {
+            CategoryPriceQuantityVM categoryPriceAndQuantity = categoryQuantityMap.get(categoryId);
+            Integer quantity = categoryPriceAndQuantity.getQuantity();
+            // We want to apply first rate campaign that can supply the rule
+            for (CampaignDTO campaign : rateCampaigns) {
+                if (campaign.getBaseProductQuantity() < quantity) {
+                    categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() * (1 - campaign.getDiscount()));
+                    break;
+                }
+            }
+            // We want to apply first amount campaign that can supply the rule
+            for (CampaignDTO campaign : amountCampaigns) {
+                if (campaign.getBaseProductQuantity() < quantity) {
+                    categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() - campaign.getDiscount());
+                    break;
+                }
+            }
+            subTotal += categoryPriceAndQuantity.getPrice();
+        }
+        return subTotal;
+    }
+
+    private void groupCampaigns(List<CampaignDTO> campaignList, List<CampaignDTO> rateCampaigns, List<CampaignDTO> amountCampaigns) {
         if (campaignList != null) {
             campaignList.stream().forEach(c -> {
                 if (c.getDiscountTypeId().equals(DiscountTypeEnum.RATE.getId())) {
@@ -172,28 +203,9 @@ public class CartServiceImpl implements CartService {
                 }
             });
         }
-
-        Double subTotal = 0d;
-        // Iterate on map for checking campaigns.
-        for (Long categoryId : categoryQuantityMap.keySet()) {
-            CategoryPriceQuantityVM categoryPriceAndQuantity = categoryQuantityMap.get(categoryId);
-            Integer quantity = categoryPriceAndQuantity.getQuantity();
-            for (CampaignDTO campaign : rateCampaigns) {
-                if (campaign.getBaseProductQuantity() < quantity) {
-                    categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() * (1 - campaign.getDiscount()));
-                    break;
-                }
-            }
-            for (CampaignDTO campaign : amountCampaigns) {
-                if (campaign.getBaseProductQuantity() < quantity) {
-                    categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() - campaign.getDiscount());
-                }
-            }
-            subTotal += categoryPriceAndQuantity.getPrice();
-        }
-        return subTotal;
     }
 
+    @Override
     public double getCouponDiscount(String code, Double subTotal) {
         CouponDTO couponDTO = couponService.findCouponByCode(code).orElse(null);
         // If code is valid
@@ -205,6 +217,7 @@ public class CartServiceImpl implements CartService {
         return subTotal;
     }
 
+    @Override
     public double getDeliveryCost(CartDTO cartDTO) {
         DeliveryCostCalculator deliveryCostCalculator = new DeliveryCostCalculator();
         return deliveryCostCalculator.calculateFor(cartDTO);

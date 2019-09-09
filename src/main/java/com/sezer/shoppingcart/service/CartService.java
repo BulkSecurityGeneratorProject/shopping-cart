@@ -40,4 +40,12 @@ public interface CartService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    double getTotalAmountAfterDiscounts(String campaignCode);
+
+    double getCampaignDiscount(CartDTO cartDTO);
+
+    double getCouponDiscount(String code, Double subTotal);
+
+    double getDeliveryCost(CartDTO cartDTO);
 }
