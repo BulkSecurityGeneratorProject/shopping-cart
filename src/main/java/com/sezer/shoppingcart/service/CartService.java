@@ -1,6 +1,7 @@
 package com.sezer.shoppingcart.service;
 
 import com.sezer.shoppingcart.service.dto.CartDTO;
+import com.sezer.shoppingcart.service.dto.ProductDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,8 @@ public interface CartService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    void addItem(ProductDTO product);
 
     double getTotalAmountAfterDiscounts(String campaignCode);
 

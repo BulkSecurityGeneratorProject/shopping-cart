@@ -107,7 +107,8 @@ public class CartServiceImpl implements CartService {
         cartRepository.deleteById(id);
     }
 
-    public void addItem(ProductDTO product, Integer quantity) {
+    @Override
+    public void addItem(ProductDTO product) {
         // If user has cart in pending order state get this cart first else generate new Cart
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findByUserIsCurrentUser(CartStateEnum.PENDING_ORDER.getId()).orElse(new Cart()));
 
@@ -123,7 +124,7 @@ public class CartServiceImpl implements CartService {
         CartProductDTO cartProductDTO = new CartProductDTO();
         cartProductDTO.setCartId(cartDTO.getId());
         cartProductDTO.setProductId(product.getId());
-        cartProductDTO.setQuantity(quantity);
+        cartProductDTO.setQuantity(product.getQuantity());
         cartProductService.save(cartProductDTO);
     }
 

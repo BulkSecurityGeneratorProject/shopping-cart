@@ -93,6 +93,8 @@ export class HomeComponent implements OnInit {
       )
       .subscribe((res: IProduct[]) => {
         this.products = res;
+        res.forEach(p => (p.quantity = 1));
+        console.log(res);
       });
   }
 

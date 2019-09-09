@@ -7,6 +7,7 @@ export interface IProduct {
   categoryId?: number;
   category?: Category;
   cartId?: number;
+  quantity?: number;
 }
 
 export class Product implements IProduct {
@@ -16,6 +17,7 @@ export class Product implements IProduct {
     public price?: number,
     public categoryId?: number,
     public category?: Category,
-    public cartId?: number
+    public cartId?: number,
+    public quantity?: number
   ) {}
 }

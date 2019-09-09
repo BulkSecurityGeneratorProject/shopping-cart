@@ -1,9 +1,9 @@
 package com.sezer.shoppingcart.web.rest;
 
 import com.sezer.shoppingcart.service.CartService;
-import com.sezer.shoppingcart.web.rest.errors.BadRequestAlertException;
 import com.sezer.shoppingcart.service.dto.CartDTO;
-
+import com.sezer.shoppingcart.service.dto.ProductDTO;
+import com.sezer.shoppingcart.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +78,16 @@ public class CartResource {
     }
 
     /**
+        request to add item to cart
+     */
+    @PostMapping("/carts/add-item")
+    public void addItem(@RequestBody ProductDTO productDTO) {
+        cartService.addItem(productDTO);
+    }
+
+    /**
      * {@code GET  /carts} : get all the carts.
      *
-
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of carts in body.
      */
     @GetMapping("/carts")

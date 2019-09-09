@@ -20,6 +20,8 @@ public class ProductDTO implements Serializable {
 
     private CategoryDTO category;
 
+    private Integer quantity;
+
     @JsonIgnore
     private Long cartId;
 
@@ -69,6 +71,14 @@ public class ProductDTO implements Serializable {
 
     public void setCartId(Long cartId) {
         this.cartId = cartId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     @Override
