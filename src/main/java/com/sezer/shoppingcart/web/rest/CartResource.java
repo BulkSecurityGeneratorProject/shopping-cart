@@ -4,6 +4,7 @@ import com.sezer.shoppingcart.service.CartService;
 import com.sezer.shoppingcart.service.dto.CartDTO;
 import com.sezer.shoppingcart.service.dto.ProductDTO;
 import com.sezer.shoppingcart.web.rest.errors.BadRequestAlertException;
+import com.sezer.shoppingcart.web.rest.vm.CartDetailVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -81,8 +82,11 @@ public class CartResource {
         request to add item to cart
      */
     @PostMapping("/carts/add-item")
-    public void addItem(@RequestBody ProductDTO productDTO) {
-        cartService.addItem(productDTO);
+    public ResponseEntity<CartDetailVM> addItem(@RequestBody ProductDTO productDTO) {
+        CartDetailVM result = cartService.addItem(productDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createAlert(applicationName, "item-added", ENTITY_NAME))
+            .body(result);
     }
 
     /**

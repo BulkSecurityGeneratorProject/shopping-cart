@@ -1,31 +1,32 @@
 package com.sezer.shoppingcart.service.helper;
 
-import com.sezer.shoppingcart.service.dto.CartDTO;
+import com.sezer.shoppingcart.config.ApplicationProperties;
 import com.sezer.shoppingcart.service.dto.CartProductDTO;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class DeliveryCostCalculator {
 
-    @Value("${delivery.costPerDelivery}")
-    private double costPerDelivery;
-
-    @Value("${delivery.costPerProduct}")
-    private double costPerProduct;
+    private final ApplicationProperties applicationProperties;
 
     private double fixedCost = 2.99d;
 
-    public double calculateFor(CartDTO cart) {
-        List<CartProductDTO> products = cart.getCartProduct();
+    public DeliveryCostCalculator(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
+    }
+
+    public double calculateFor(List<CartProductDTO> products) {
         Set<Long> distinctCategorySet = new HashSet<>();
         int numberOfProducts = products.size();
-        for (CartProductDTO product : products) {
-            distinctCategorySet.add(product.getProduct().getCategoryId());
+        for (CartProductDTO cartProductDTO : products) {
+            distinctCategorySet.add(cartProductDTO.getProduct().getCategory().getId());
         }
         int numberOfDeliveries = distinctCategorySet.size();
-        return (costPerDelivery * numberOfDeliveries) + (costPerProduct*numberOfProducts);
+        ApplicationProperties.Delivery delivery = applicationProperties.getDelivery();
+        return (delivery.getCostPerDelivery() * numberOfDeliveries) + (delivery.getCostPerProduct() * numberOfProducts);
     }
 }

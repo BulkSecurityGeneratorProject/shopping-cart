@@ -19,7 +19,7 @@
         <h1 class="display-4">Entities</h1>
         <hr>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <h4 class="lead">Coupon</h4>
                 <div class="table-responsive" *ngIf="coupons?.length > 0">
                     <table class="table table-striped">
@@ -48,7 +48,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <h4 class="lead">Campaign</h4>
                 <div class="table-responsive" *ngIf="campaigns?.length > 0">
                     <table class="table table-striped">
@@ -77,7 +77,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <h4 class="lead">Cart State (ENUM)</h4>
                 <div class="table-responsive" *ngIf="cartStates?.length > 0">
                     <table class="table table-striped">
@@ -98,7 +98,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <h4 class="lead">Discount Type (ENUM)</h4>
                 <div class="table-responsive" *ngIf="discountTypes?.length > 0">
                     <table class="table table-striped">
@@ -169,8 +169,8 @@
                                 </div>
                             </td>
                             <td>
-                                <input type="number" maxlength="1" style="width:40px" [value]="product.quantity">
-                                <fa-icon [icon]="'plus'"></fa-icon>
+                                <input type="number" maxlength="1" style="width:40px" [(ngModel)]="product.quantity">
+                                <fa-icon [icon]="'plus'" (click)="addItem(product)"></fa-icon>
                             </td>
                         </tr>
                         </tbody>
@@ -180,7 +180,7 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <h4 class="lead">Cart (Represents user cart)</h4>
                 <div class="table-responsive" *ngIf="carts?.length > 0">
                     <table class="table table-striped">
@@ -207,7 +207,7 @@
                     </table>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <h4 class="lead">Cart Product (Represents products in cart)</h4>
                 <div class="table-responsive" *ngIf="cartProducts?.length > 0">
                     <table class="table table-striped">
@@ -240,6 +240,68 @@
                         </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h4 class="lead">Cart (Represents costs)</h4>
+                <hr>
+                <div class="card jhi-card" *ngIf="cartDetail">
+                    <div class="row">
+                        <div class="col-md">
+                            <span>TOTAL</span>
+                        </div>
+                        <div class="col-md">
+                            <span>{{cartDetail.total}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>CAMPAIGN DISCOUNT</span>
+                        </div>
+                        <div class="col-md">
+                            <span>{{cartDetail.campaignDiscount}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>SUB-TOTAL</span>
+                        </div>
+                        <div class="col-md">
+                            <span><span>{{cartDetail.subTotal}}</span></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>COUPON DISCOUNT</span>
+                        </div>
+                        <div class="col-md">
+                            <span><span>{{cartDetail.couponDiscount}}</span></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>AFTER DISCOUNT</span>
+                        </div>
+                        <div class="col-md">
+                            <span><span>{{cartDetail.afterDiscount}}</span></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>DELIVERY</span>
+                        </div>
+                        <div class="col-md">
+                            <span>{{cartDetail.delivery}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md">
+                            <span>FINAL TOTAL</span>
+                        </div>
+                        <div class="col-md">
+                            <span><span>{{cartDetail.finalTotal}}</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

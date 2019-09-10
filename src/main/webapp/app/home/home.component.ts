@@ -13,7 +13,7 @@ import { CartService } from 'app/entities/cart';
 import { ICart } from 'app/shared/model/cart.model';
 import { ICartState } from 'app/shared/model/cart-state.model';
 import { CartStateService } from 'app/entities/cart-state';
-import { Campaign, ICampaign } from 'app/shared/model/campaign.model';
+import { ICampaign } from 'app/shared/model/campaign.model';
 import { CampaignService } from 'app/entities/campaign';
 import { DiscountTypeService } from 'app/entities/discount-type';
 import { CouponService } from 'app/entities/coupon';
@@ -21,6 +21,7 @@ import { CartProductService } from 'app/entities/cart-product';
 import { IDiscountType } from 'app/shared/model/discount-type.model';
 import { ICoupon } from 'app/shared/model/coupon.model';
 import { ICartProduct } from 'app/shared/model/cart-product.model';
+import { ICartDetail } from 'app/shared/model/cart-detail.model';
 
 @Component({
   selector: 'jhi-home',
@@ -38,6 +39,7 @@ export class HomeComponent implements OnInit {
   discountTypes: IDiscountType[];
   coupons: ICoupon[];
   cartProducts: ICartProduct[];
+  cartDetail: ICartDetail;
 
   constructor(
     private accountService: AccountService,
@@ -168,6 +170,21 @@ export class HomeComponent implements OnInit {
       .subscribe((res: ICartProduct[]) => {
         this.cartProducts = res;
       });
+  }
+
+  loadCartDetails() {
+    this.loadCarts();
+    this.loadCartProducts();
+  }
+
+  addItem(product: IProduct) {
+    console.log('add item called');
+    console.log(product);
+    this.cartService.addItem(product).subscribe(res => {
+      this.cartDetail = res.body;
+      console.log(this.cartDetail);
+      this.loadCartDetails();
+    });
   }
 
   registerAuthenticationSuccess() {

@@ -7,14 +7,12 @@ import com.sezer.shoppingcart.enums.DiscountTypeEnum;
 import com.sezer.shoppingcart.repository.CartRepository;
 import com.sezer.shoppingcart.repository.UserRepository;
 import com.sezer.shoppingcart.security.SecurityUtils;
-import com.sezer.shoppingcart.service.CampaignService;
-import com.sezer.shoppingcart.service.CartProductService;
-import com.sezer.shoppingcart.service.CartService;
-import com.sezer.shoppingcart.service.CouponService;
+import com.sezer.shoppingcart.service.*;
 import com.sezer.shoppingcart.service.dto.*;
 import com.sezer.shoppingcart.service.helper.DeliveryCostCalculator;
 import com.sezer.shoppingcart.service.mapper.CartMapper;
 import com.sezer.shoppingcart.service.vm.CategoryPriceQuantityVM;
+import com.sezer.shoppingcart.web.rest.vm.CartDetailVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,13 +42,19 @@ public class CartServiceImpl implements CartService {
 
     private final CouponService couponService;
 
-    public CartServiceImpl(CartRepository cartRepository, CartMapper cartMapper, UserRepository userRepository, CartProductService cartProductService, CampaignService campaignService, CouponService couponService) {
+    private final ProductService productService;
+
+    private final DeliveryCostCalculator deliveryCostCalculator;
+
+    public CartServiceImpl(CartRepository cartRepository, CartMapper cartMapper, UserRepository userRepository, CartProductService cartProductService, CampaignService campaignService, CouponService couponService, ProductService productService, DeliveryCostCalculator deliveryCostCalculator) {
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
         this.userRepository = userRepository;
         this.cartProductService = cartProductService;
         this.campaignService = campaignService;
         this.couponService = couponService;
+        this.productService = productService;
+        this.deliveryCostCalculator = deliveryCostCalculator;
     }
 
     /**
@@ -108,7 +112,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void addItem(ProductDTO product) {
+    public CartDetailVM addItem(ProductDTO product) {
+        CartDetailVM cartDetailVM = new CartDetailVM();
         // If user has cart in pending order state get this cart first else generate new Cart
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findByUserIsCurrentUser(CartStateEnum.PENDING_ORDER.getId()).orElse(new Cart()));
 
@@ -117,7 +122,18 @@ public class CartServiceImpl implements CartService {
             String username = SecurityUtils.getCurrentUserLogin().orElse(null);
             User user = userRepository.findOneByLogin(username).orElse(null);
             cartDTO.setUserId(user.getId());
+            cartDTO.setCartStateId(CartStateEnum.PENDING_ORDER.getId());
             cartDTO = this.save(cartDTO);
+        } else {
+            List<CartProductDTO> allProducts = cartProductService.findAllByCartId(cartDTO.getId());
+            CartProductDTO cartProductDTO = allProducts.stream().filter(cp -> cp.getProductId().equals(product.getId())).findAny().orElse(null);
+            if (cartProductDTO != null) {
+                cartProductDTO.setQuantity(cartProductDTO.getQuantity() + product.getQuantity());
+                cartProductService.save(cartProductDTO);
+                // Just used one of campaign codes specified before
+                getTotalAmountAfterDiscounts(cartDetailVM, "006f2e76");
+                return cartDetailVM;
+            }
         }
 
         // Product added to CartProduct entity
@@ -126,24 +142,31 @@ public class CartServiceImpl implements CartService {
         cartProductDTO.setProductId(product.getId());
         cartProductDTO.setQuantity(product.getQuantity());
         cartProductService.save(cartProductDTO);
+        // Just used one of campaign codes specified before
+        getTotalAmountAfterDiscounts(cartDetailVM, "006f2e76");
+        return cartDetailVM;
     }
 
     @Override
-    public double getTotalAmountAfterDiscounts(String campaignCode) {
+    public CartDetailVM getTotalAmountAfterDiscounts(CartDetailVM cartDetailVM, String campaignCode) {
         CartDTO cartDTO = cartMapper.toDto(cartRepository.findByUserIsCurrentUser(CartStateEnum.PENDING_ORDER.getId()).orElse(null));
-        Double subTotal = this.getCampaignDiscount(cartDTO);
-        subTotal = this.getCouponDiscount(campaignCode, subTotal);
+        cartDetailVM = this.getCampaignDiscount(cartDTO, cartDetailVM);
+        cartDetailVM = this.getCouponDiscount(campaignCode, cartDetailVM);
         Double deliveryCost = getDeliveryCost(cartDTO);
-        return subTotal + deliveryCost;
+        cartDetailVM.setDelivery(deliveryCost);
+        cartDetailVM.setFinalTotal(cartDetailVM.getAfterDiscount() + deliveryCost);
+        return cartDetailVM;
     }
 
     @Override
-    public double getCampaignDiscount(CartDTO cartDTO) {
+    public CartDetailVM getCampaignDiscount(CartDTO cartDTO, CartDetailVM cartDetailVM) {
         if (cartDTO == null)
-            return 0d;
+            return cartDetailVM;
+
+        List<CartProductDTO> cartProductList = cartProductService.findAllByCartId(cartDTO.getId());
 
         // Grouped by categoryId with quantity and price informations
-        Map<Long, CategoryPriceQuantityVM> categoryQuantityMap = getCategoryQuantityMap(cartDTO.getId());
+        Map<Long, CategoryPriceQuantityVM> categoryQuantityMap = getCategoryQuantityMap(cartProductList);
 
         // Check for all campaigns
         List<CampaignDTO> campaignList = campaignService.findAll();
@@ -154,15 +177,18 @@ public class CartServiceImpl implements CartService {
         // Group different type of campaigns and order them descending order by quantity param
         groupCampaigns(campaignList, rateCampaigns, amountCampaigns);
 
+        Double total = 0d;
         Double subTotal = 0d;
         // Iterate on map for checking campaigns.
         for (Long categoryId : categoryQuantityMap.keySet()) {
             CategoryPriceQuantityVM categoryPriceAndQuantity = categoryQuantityMap.get(categoryId);
             Integer quantity = categoryPriceAndQuantity.getQuantity();
+            Double price = categoryPriceAndQuantity.getPrice();
+            total += price;
             // We want to apply first rate campaign that can supply the rule
             for (CampaignDTO campaign : rateCampaigns) {
                 if (campaign.getBaseProductQuantity() < quantity) {
-                    categoryPriceAndQuantity.setPrice(categoryPriceAndQuantity.getPrice() * (1 - campaign.getDiscount()));
+                    categoryPriceAndQuantity.setPrice(price * (1 - campaign.getDiscount()));
                     break;
                 }
             }
@@ -175,7 +201,11 @@ public class CartServiceImpl implements CartService {
             }
             subTotal += categoryPriceAndQuantity.getPrice();
         }
-        return subTotal;
+        cartDetailVM.setTotal(total);
+        cartDetailVM.setSubTotal(subTotal);
+        cartDetailVM.setAfterDiscount(subTotal);
+        cartDetailVM.setCampaignDiscount(total - subTotal);
+        return cartDetailVM;
     }
 
     private void groupCampaigns(List<CampaignDTO> campaignList, List<CampaignDTO> rateCampaigns, List<CampaignDTO> amountCampaigns) {
@@ -207,42 +237,47 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public double getCouponDiscount(String code, Double subTotal) {
+    public CartDetailVM getCouponDiscount(String code, CartDetailVM cartDetailVM) {
         CouponDTO couponDTO = couponService.findCouponByCode(code).orElse(null);
         // If code is valid
         if (couponDTO != null) {
-            if (couponDTO.getMinimumAmount() <= subTotal) {
-                subTotal *= (0.9d);
+            if (couponDTO.getMinimumAmount() <= cartDetailVM.getSubTotal()) {
+                cartDetailVM.setCouponDiscount(cartDetailVM.getSubTotal() * 0.1d);
+                cartDetailVM.setAfterDiscount(cartDetailVM.getSubTotal() * 0.9d);
             }
         }
-        return subTotal;
+        return cartDetailVM;
     }
 
     @Override
     public double getDeliveryCost(CartDTO cartDTO) {
-        DeliveryCostCalculator deliveryCostCalculator = new DeliveryCostCalculator();
-        return deliveryCostCalculator.calculateFor(cartDTO);
+        List<CartProductDTO> cartProducts = cartProductService.findAllByCartId(cartDTO.getId());
+        cartProducts.stream().forEach(cp -> {
+            ProductDTO product = productService.findOne(cp.getProductId()).orElse(new ProductDTO());
+            cp.setProduct(product);
+        });
+        return deliveryCostCalculator.calculateFor(cartProducts);
     }
 
     // This function returns quantity of the items bought from same category with categoryId
-    private Map<Long, CategoryPriceQuantityVM> getCategoryQuantityMap(Long cartId) {
-        List<CartProductDTO> cartProductList = cartProductService.findAllByCartId(cartId);
+    private Map<Long, CategoryPriceQuantityVM> getCategoryQuantityMap(List<CartProductDTO> cartProductList) {
 
         Map<Long, CategoryPriceQuantityVM> categoryQuantityMap = new HashMap<>();
 
         // Build map With price and quantity infos
         if (cartProductList != null) {
             cartProductList.stream().forEach(cp -> {
-                Long categoryId = cp.getProduct().getCategoryId();
+                ProductDTO product = productService.findOne(cp.getProductId()).orElse(new ProductDTO());
+                Long categoryId = product.getCategory().getId();
                 if (categoryQuantityMap.containsKey(categoryId)) {
                     CategoryPriceQuantityVM categoryPriceQuantity = categoryQuantityMap.get(categoryId);
                     categoryPriceQuantity.setQuantity(categoryPriceQuantity.getQuantity() + cp.getQuantity());
-                    categoryPriceQuantity.setPrice(categoryPriceQuantity.getPrice() + cp.getProduct().getPrice());
+                    categoryPriceQuantity.setPrice(categoryPriceQuantity.getPrice() + product.getPrice() * cp.getQuantity());
                     categoryQuantityMap.put(categoryId, categoryPriceQuantity);
                 } else {
                     CategoryPriceQuantityVM categoryPriceQuantity = new CategoryPriceQuantityVM();
                     categoryPriceQuantity.setQuantity(cp.getQuantity());
-                    categoryPriceQuantity.setPrice(cp.getProduct().getPrice());
+                    categoryPriceQuantity.setPrice(product.getPrice() * cp.getQuantity());
                     categoryQuantityMap.put(categoryId, categoryPriceQuantity);
                 }
             });

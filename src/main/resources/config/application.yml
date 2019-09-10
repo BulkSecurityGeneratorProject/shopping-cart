@@ -149,4 +149,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  delivery: # delivery cost can be changed easily by editing these values
+    cost-per-delivery: 1.0
+    cost-per-product: 2.0

@@ -2,6 +2,7 @@ package com.sezer.shoppingcart.service;
 
 import com.sezer.shoppingcart.service.dto.CartDTO;
 import com.sezer.shoppingcart.service.dto.ProductDTO;
+import com.sezer.shoppingcart.web.rest.vm.CartDetailVM;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +43,13 @@ public interface CartService {
      */
     void delete(Long id);
 
-    void addItem(ProductDTO product);
+    CartDetailVM addItem(ProductDTO product);
 
-    double getTotalAmountAfterDiscounts(String campaignCode);
+    CartDetailVM getTotalAmountAfterDiscounts(CartDetailVM cartDetailVM, String campaignCode);
 
-    double getCampaignDiscount(CartDTO cartDTO);
+    CartDetailVM getCampaignDiscount(CartDTO cartDTO, CartDetailVM cartDetailVM);
 
-    double getCouponDiscount(String code, Double subTotal);
+    CartDetailVM getCouponDiscount(String code, CartDetailVM cartDetailVM);
 
     double getDeliveryCost(CartDTO cartDTO);
 }

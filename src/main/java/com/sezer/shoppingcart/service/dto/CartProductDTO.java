@@ -19,6 +19,8 @@ public class CartProductDTO implements Serializable {
 
     private Long productId;
 
+    private Long productCategoryId;
+
     public Long getId() {
         return id;
     }
@@ -57,6 +59,14 @@ public class CartProductDTO implements Serializable {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Long getProductCategoryId() {
+        return productCategoryId;
+    }
+
+    public void setProductCategoryId(Long productCategoryId) {
+        this.productCategoryId = productCategoryId;
     }
 
     @Override
